@@ -1,0 +1,109 @@
+{% package main %}
+
+{% code
+type Index struct {
+	Tree *Tree
+
+	DjinnServer string
+}
+%}
+
+{% collapsespace %}
+{% func renderImages(imgs []*Image) %}
+	{% if len(imgs) > 0 %}
+		<div class="panel">
+			{% for i, img := range imgs %}
+				{% if i == 0 && img.Group != "" %}
+					<div class="panel-header"><h3>{%s img.Group %}</h3></div>
+				{% endif %}
+				<div class="panel-row">
+					<div class="left">
+						<a href="{%s img.Endpoint() %}">{%s img.Name %}</a>
+						{% if img.Link != "" %}
+							<br/><span class="muted">&rarr; {%s img.Link %}</span>
+						{% endif %}
+					</div>
+					<div class="right muted" title="Last modified">{%s img.ModTime.Format("Mon, 06 Jan 2006") %}</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+{% endfunc %}
+
+{% func renderTree(depth int, t *Tree) %}
+	{% if depth == 1 %}
+		<h2>{%s t.Name() %}</h2>
+	{% elseif depth == 2 %}
+		<h3 class="accordion accordion-open muted" data-accordion="{%s t.Name() %}">{%s t.Name() %}</h3>
+	{% endif %}
+	{% if t.HasChildren() %}
+		<div data-accordion-body="{%s t.Name() %}">
+			{% for _, child := range t.Children() %}
+				{%= renderTree(depth+1, child) %}
+			{% endfor %}
+		</div>
+	{% endif %}
+	{%= renderImages(t.Images()) %}
+{% endfunc %}
+
+{% func (p *Index) Render() %}
+	<!DOCTYPE HTML>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8">
+			<meta content="width=device-width, initial-scale=1" name="viewport">
+			<title>Djinn CI Images</title>
+			<style type="text/css">{% cat "./static/main.min.css" %}</style>
+		</head>
+		<body>
+			<div class="content">
+				<div class="title">
+					<div class="logo">
+						<div class="handle"></div>
+						<div class="lid"></div>
+						<div class="lantern"></div>
+					</div>
+					<h2>Djinn CI Images</h2>
+					{% if p.DjinnServer != "" %}
+						<a target="_blank" href="{%s p.DjinnServer %}">Back to Djinn CI</a>
+					{% endif %}
+				</div>
+				{%= renderTree(0, p.Tree) %}
+			</div>
+		</body>
+		<footer>
+			<script type="text/javascript">
+				var els = document.querySelectorAll("[data-accordion]");
+
+				var tab = {};
+
+				for (var i = 0; i < els.length; i++) {
+					var target = els[i].dataset.accordion;
+
+					tab[target] = document.querySelector("[data-accordion-body="+target+"]");
+				}
+
+				for (var i = 0; i < els.length; i++) {
+					els[i].addEventListener("click", function(e) {
+						e.preventDefault();
+
+						if (e.target.dataset.accordion in tab) {
+							var el = tab[e.target.dataset.accordion];
+
+							el.hidden = !el.hidden;
+
+							if (el.hidden) {
+								e.target.classList.remove("accordion-open");
+								e.target.classList.add("accordion-closed");
+							} else {
+								e.target.classList.remove("accordion-closed");
+								e.target.classList.add("accordion-open");
+							}
+						}
+					});
+				}
+			</script>
+		</footer>
+	</html>
+{% endfunc %}
+{% endcollapsespace %}
