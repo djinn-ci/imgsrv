@@ -6,10 +6,10 @@ After=network-online.target
 
 [Service]
 Type=simple
-User=djinn-server
+User=djinn
 Group=djinn
 PIDFile=/run/djinn/imgsrv.pid
-ExecStart=/usr/bin/local/djinn-imgsrv -config /etc/djinn/imgsrv.conf
+ExecStart=/usr/local/bin/djinn-imgsrv -config /etc/djinn/imgsrv.conf
 KillMode=mixed
 KillSignal=SIGINT
 
