@@ -9,6 +9,7 @@ Type=simple
 User=djinn
 Group=djinn
 PIDFile=/run/djinn/imgsrv.pid
+EnvironmentFile=/etc/default/djinn
 ExecStart=/usr/local/bin/djinn-imgsrv -config /etc/djinn/imgsrv.conf
 KillMode=mixed
 KillSignal=SIGINT
