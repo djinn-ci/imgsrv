@@ -63,5 +63,5 @@ directory for their driver, for example `qemu/` for the QEMU driver. Any
 directory beneath that will either be treated as part of an image's name, or
 a category for that image depending on how the image server is configured.
 
-The above configuration is the exact configuration that is used to server
+The above configuration is the exact configuration that is used to serve
 https://images.djinn-ci.com, if you want to see how it would render.
