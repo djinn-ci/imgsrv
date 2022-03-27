@@ -58,7 +58,7 @@ within the `x86_64` directory, which we would want categorized.
 
 A driver group is a group of images whose names match a certain pattern.
 
-The image server expects driver images to be organizes beneath the respective
+The image server expects driver images to be organized beneath the respective
 directory for their driver, for example `qemu/` for the QEMU driver. Any
 directory beneath that will either be treated as part of an image's name, or
 a category for that image depending on how the image server is configured.
