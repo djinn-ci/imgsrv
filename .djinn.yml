@@ -1,0 +1,32 @@
+driver:
+  type: qemu
+  image: debian/stable
+env:
+- GOVERSION=1.18
+sources:
+- https://github.com/djinn-ci/imgsrv.git
+- https://github.com/golang/tools
+- https://github.com/valyala/quicktemplate
+stages:
+- deps
+- make
+jobs:
+- stage: deps
+  commands:
+  - wget -q https://go.dev/dl/go${GOVERSION}.linux-amd64.tar.gz
+  - tar -xzf go${GOVERSION}.linux-amd64.tar.gz
+  - mv go /usr/local
+  - ln -sf /usr/local/go/bin/go /usr/local/bin/go
+  - ln -sf /usr/local/go/bin/gofmt /usr/local/bin/gofmt
+  - cd ~/tools/cmd/stringer
+  - go build
+  - mv stringer /usr/local/bin
+  - cd ~/quicktemplate/qtc
+  - go build
+  - mv qtc /usr/local/bin
+- stage: make
+  commands:
+  - cd ~/imgsrv
+  - ./make.sh
+  artifacts:
+  - imgsrv/bin/djinn-imgsrv
