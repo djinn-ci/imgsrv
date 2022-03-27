@@ -148,6 +148,9 @@ func DecodeConfig(f *os.File) (*Server, func(), error) {
 		return nil, nil, err
 	}
 
+	log.Info.Println("using write_timeout of", cfg.Net.WriteTimeout)
+	log.Info.Println("using read_timeout of", cfg.Net.ReadTimeout)
+
 	sc := &Scanner{
 		dir: cfg.Store.Path,
 		errh: func(err error) {
