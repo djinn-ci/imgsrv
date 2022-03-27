@@ -2,9 +2,9 @@
 
 imgsrv is the source code for the Djinn CI image server, that is hosted at
 https://images.djinn-ci.com. This serves the base images for an installation
-of Djinn CI, and provides a simple UI for viewing them. This watches the
-location where base images are stored, and scans them into an in-memory database
-at a set interval, which are then served.
+of Djinn CI, and provides a simple UI for viewing and downloading them. This
+watches the location where base images are stored, and scans them into an
+in-memory database at a set interval, which are then served.
 
 The image server is configured using a simple configuration file, an example is
 below,
