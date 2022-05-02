@@ -12,16 +12,28 @@ import (
 	"time"
 )
 
-var DJINN_SERVER string
+var (
+	DJINN_SERVER string
+	Build        string
+)
 
 func main() {
 	argv0 := os.Args[0]
 
-	var config string
+	var (
+		config  string
+		version bool
+	)
 
 	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	fs.StringVar(&config, "config", "djinn-imgsrv.conf", "the config file")
+	fs.BoolVar(&version, "version", false, "show version and exit")
 	fs.Parse(os.Args[1:])
+
+	if version {
+		fmt.Println(Build)
+		return
+	}
 
 	f, err := os.Open(config)
 
