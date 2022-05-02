@@ -28,6 +28,15 @@ func (i *Image) Endpoint() string {
 	return s + "/" + i.Name
 }
 
+// Tree offers a hierarchical way of organizing images by their driver, category
+// and group. The driver, category, and group of an image are used as the key
+// under which an image would be stored, if they are not empty.
+//
+// Each time an image is stored in a tree, a new sub-tree may be created under
+// which the image is actually stored. For example, if an image has the driver
+// of "qemu", but not category or group, then it will be stored under a tree
+// named "qemu". If an image has no driver, category or group, then it is
+// stored in the root tree, that is, the top-level.
 type Tree struct {
 	name     string
 	order    []string
