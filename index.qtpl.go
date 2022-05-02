@@ -69,7 +69,7 @@ func streamrenderImages(qw422016 *qt422016.Writer, imgs []*Image) {
 //line index.qtpl:24
 			qw422016.N().S(` </div> <div class="right muted" title="Last modified">`)
 //line index.qtpl:26
-			qw422016.E().S(img.ModTime.Format("Mon, 06 Jan 2006"))
+			qw422016.E().S(img.ModTime.Format("Mon, 02 Jan 2006"))
 //line index.qtpl:26
 			qw422016.N().S(`</div> </div> `)
 //line index.qtpl:28

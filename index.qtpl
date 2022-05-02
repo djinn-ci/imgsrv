@@ -23,7 +23,7 @@ type Index struct {
 							<br/><span class="muted">&rarr; {%s img.Link %}</span>
 						{% endif %}
 					</div>
-					<div class="right muted" title="Last modified">{%s img.ModTime.Format("Mon, 06 Jan 2006") %}</div>
+					<div class="right muted" title="Last modified">{%s img.ModTime.Format("Mon, 02 Jan 2006") %}</div>
 				</div>
 			{% endfor %}
 		</div>
