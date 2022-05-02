@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"os"
 	"time"
 
 	"crawshaw.io/sqlite"
@@ -36,20 +35,22 @@ func InitDB() (DB, error) {
 	}, nil
 }
 
-var insertImg = `
+var (
+	insertImg = `
 INSERT INTO images
 (path, driver, category, group_name, name, link, mod_time)
 VALUES ($1, $2, $3, $4, $5, $6, $7)
 `
 
+	updateImg = `
+UPDATE images
+SET mod_time = $1
+WHERE (path = $2)
+`
+)
+
 func (db DB) Load(imgs []*Image) error {
 	for _, img := range imgs {
-		info, err := os.Stat(img.Path)
-
-		if err != nil {
-			return err
-		}
-
 		stmt, err := db.Prepare(insertImg)
 
 		if err != nil {
@@ -62,10 +63,30 @@ func (db DB) Load(imgs []*Image) error {
 		stmt.BindText(4, img.Group)
 		stmt.BindText(5, img.Name)
 		stmt.BindText(6, img.Link)
-		stmt.BindInt64(7, info.ModTime().Unix())
+		stmt.BindInt64(7, img.ModTime.Unix())
 
 		if _, err := stmt.Step(); err != nil {
-			return err
+			sqlerr, _ := err.(sqlite.Error)
+
+			if sqlerr.Code == sqlite.SQLITE_CONSTRAINT_UNIQUE {
+				stmt, err := db.Prepare(updateImg)
+
+				if err != nil {
+					return err
+				}
+
+				stmt.BindInt64(1, img.ModTime.Unix())
+				stmt.BindText(2, img.Path)
+
+				if _, err := stmt.Step(); err != nil {
+					return err
+				}
+
+				if err := stmt.ClearBindings(); err != nil {
+					return err
+				}
+				continue
+			}
 		}
 
 		if err := stmt.ClearBindings(); err != nil {
@@ -90,23 +111,25 @@ func (db DB) Sync(imgs []*Image) (int, error) {
 		return 0, err
 	}
 
-	set := make(map[string]struct{})
+	set := make(map[string]int64)
 
 	scan := func(stmt *sqlite.Stmt) error {
-		set[stmt.ColumnText(0)] = struct{}{}
+		set[stmt.ColumnText(0)] = stmt.ColumnInt64(1)
 
 		return nil
 	}
 
-	if err := sqlitex.Exec(db.Conn, "SELECT path FROM images", scan); err != nil {
+	if err := sqlitex.Exec(db.Conn, "SELECT path, mod_time FROM images", scan); err != nil {
 		return 0, err
 	}
 
 	new := make([]*Image, 0, len(imgs))
 
 	for _, img := range imgs {
-		if _, ok := set[img.Path]; ok {
-			continue
+		if mod, ok := set[img.Path];ok {
+			if mod == img.ModTime.Unix() {
+				continue
+			}
 		}
 		new = append(new, img)
 	}
