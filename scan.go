@@ -109,6 +109,7 @@ func (s *Scanner) Scan() []*Image {
 				Group:    group,
 				Name:     name,
 				Link:     link,
+				ModTime:  info.ModTime(),
 			})
 		}
 		return nil
