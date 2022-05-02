@@ -101,7 +101,7 @@ func (s *Server) Handle(w http.ResponseWriter, r *http.Request) {
 	imgs, err := s.DB.Images(
 		WhereDriver(driver),
 		WhereCategory(category),
-		query.OrderAsc("driver", "category", "group_name"),
+		query.OrderAsc("driver", "category", "group_name", "path"),
 	)
 
 	if err != nil {
