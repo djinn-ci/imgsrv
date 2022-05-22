@@ -56,6 +56,8 @@ func (s *Scanner) Scan() []*Image {
 			return nil
 		}
 
+		modtime := info.ModTime()
+
 		relpath := strings.Replace(path, s.dir+string(os.PathSeparator), "", 1)
 		parts := strings.Split(relpath, string(os.PathSeparator))
 
@@ -90,11 +92,12 @@ func (s *Scanner) Scan() []*Image {
 				link, _ = os.Readlink(path)
 				symlinks[link] = struct{}{}
 
-				info, err = os.Stat(link)
+				info, err := os.Stat(filepath.Join(filepath.Dir(path), link))
 
 				if err != nil {
 					return err
 				}
+				modtime = info.ModTime()
 			}
 
 			for _, grp := range driver.groups {
@@ -115,7 +118,7 @@ func (s *Scanner) Scan() []*Image {
 				Group:    group,
 				Name:     name,
 				Link:     link,
-				ModTime:  info.ModTime(),
+				ModTime:  modtime,
 			})
 		}
 		return nil
