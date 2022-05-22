@@ -89,6 +89,12 @@ func (s *Scanner) Scan() []*Image {
 			if info.Mode().Type() == fs.ModeSymlink {
 				link, _ = os.Readlink(path)
 				symlinks[link] = struct{}{}
+
+				info, err = os.Stat(link)
+
+				if err != nil {
+					return err
+				}
 			}
 
 			for _, grp := range driver.groups {
