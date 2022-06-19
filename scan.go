@@ -100,7 +100,10 @@ func (s *Scanner) Scan() []*Image {
 				if err != nil {
 					return err
 				}
-				modtime = info.ModTime()
+
+				if linktime := info.ModTime(); linktime.After(modtime) {
+					modtime = linktime
+				}
 			}
 
 			for _, grp := range driver.groups {

@@ -44,8 +44,8 @@ VALUES ($1, $2, $3, $4, $5, $6, $7)
 
 	updateImg = `
 UPDATE images
-SET mod_time = $1
-WHERE (path = $2)
+SET mod_time = $1, link = $2
+WHERE (path = $3)
 `
 )
 
@@ -76,7 +76,8 @@ func (db DB) Load(imgs []*Image) error {
 				}
 
 				stmt.BindInt64(1, img.ModTime.Unix())
-				stmt.BindText(2, img.Path)
+				stmt.BindText(2, img.Link)
+				stmt.BindText(3, img.Path)
 
 				if _, err := stmt.Step(); err != nil {
 					return err
