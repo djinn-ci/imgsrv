@@ -1,2 +1,4 @@
 bin/
 djinn-imgsrv.conf
+djinn-imgsrv
+*.tar.gz
