@@ -90,9 +90,12 @@ func (s *Scanner) Scan() []*Image {
 
 			if info.Mode().Type() == fs.ModeSymlink {
 				link, _ = os.Readlink(path)
-				symlinks[link] = struct{}{}
 
-				info, err := os.Stat(filepath.Join(filepath.Dir(path), link))
+				linkpath := filepath.Join(filepath.Dir(path), link)
+
+				symlinks[linkpath] = struct{}{}
+
+				info, err := os.Stat(linkpath)
 
 				if err != nil {
 					return err
@@ -131,7 +134,7 @@ func (s *Scanner) Scan() []*Image {
 	imgs := make([]*Image, 0, len(initial))
 
 	for _, img := range initial {
-		if _, ok := symlinks[filepath.Base(img.Path)]; ok {
+		if _, ok := symlinks[img.Path]; ok {
 			continue
 		}
 		imgs = append(imgs, img)
