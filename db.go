@@ -158,6 +158,15 @@ func WhereCategory(category string) query.Option {
 	}
 }
 
+func WhereGroup(group string) query.Option {
+	return func(q query.Query) query.Query {
+		if group == "" {
+			return q
+		}
+		return query.Where("group_name", "=", query.Arg(group))(q)
+	}
+}
+
 var imageCols = []string{
 	"path",
 	"driver",

@@ -101,6 +101,7 @@ func (s *Server) Handle(w http.ResponseWriter, r *http.Request) {
 	imgs, err := s.DB.Images(
 		WhereDriver(driver),
 		WhereCategory(category),
+		WhereGroup(r.URL.Query().Get("group")),
 		query.OrderAsc("driver", "category", "group_name", "path"),
 	)
 
