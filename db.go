@@ -127,7 +127,7 @@ func (db DB) Sync(imgs []*Image) (int, error) {
 	new := make([]*Image, 0, len(imgs))
 
 	for _, img := range imgs {
-		if mod, ok := set[img.Path];ok {
+		if mod, ok := set[img.Path]; ok {
 			if mod == img.ModTime.Unix() {
 				continue
 			}
