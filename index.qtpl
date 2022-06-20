@@ -5,16 +5,24 @@ type Index struct {
 	Tree *Tree
 
 	DjinnServer string
+	Group       string
 }
 %}
 
 {% collapsespace %}
-{% func renderImages(imgs []*Image) %}
+{% func renderImages(group string, imgs []*Image) %}
 	{% if len(imgs) > 0 %}
 		<div class="panel">
 			{% for i, img := range imgs %}
 				{% if i == 0 && img.Group != "" %}
-					<div class="panel-header"><h3>{%s img.Group %}</h3></div>
+					<div class="panel-header">
+						<h3>{%s img.Group %}</h3>
+						{% if img.Group == group %}
+							<a class="filter filter-active" href="/">{% cat "./static/filter.svg" %}</a>
+						{% else %}
+							<a class="filter" href="?group={%s img.Group %}">{% cat "./static/filter.svg" %}</a>
+						{% endif %}
+				</div>
 				{% endif %}
 				<div class="panel-row">
 					<div class="left">
@@ -30,7 +38,7 @@ type Index struct {
 	{% endif %}
 {% endfunc %}
 
-{% func renderTree(depth int, t *Tree) %}
+{% func renderTree(group string, depth int, t *Tree) %}
 	{% if depth == 1 %}
 		<h2>{%s t.Name() %}</h2>
 	{% elseif depth == 2 %}
@@ -39,11 +47,11 @@ type Index struct {
 	{% if t.HasChildren() %}
 		<div data-accordion-body="{%s t.Name() %}">
 			{% for _, child := range t.Children() %}
-				{%= renderTree(depth+1, child) %}
+				{%= renderTree(group, depth+1, child) %}
 			{% endfor %}
 		</div>
 	{% endif %}
-	{%= renderImages(t.Images()) %}
+	{%= renderImages(group, t.Images()) %}
 {% endfunc %}
 
 {% func (p *Index) Render() %}
@@ -68,7 +76,7 @@ type Index struct {
 						<a target="_blank" href="{%s p.DjinnServer %}">Back to Djinn CI</a>
 					{% endif %}
 				</div>
-				{%= renderTree(0, p.Tree) %}
+				{%= renderTree(p.Group, 0, p.Tree) %}
 			</div>
 		</body>
 		<footer>

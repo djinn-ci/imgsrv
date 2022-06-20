@@ -98,10 +98,12 @@ func (s *Server) Handle(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	group := r.URL.Query().Get("group")
+
 	imgs, err := s.DB.Images(
 		WhereDriver(driver),
 		WhereCategory(category),
-		WhereGroup(r.URL.Query().Get("group")),
+		WhereGroup(group),
 		query.OrderAsc("driver", "category", "group_name", "path"),
 	)
 
@@ -124,6 +126,7 @@ func (s *Server) Handle(w http.ResponseWriter, r *http.Request) {
 	p := &Index{
 		Tree:        &tree,
 		DjinnServer: DJINN_SERVER,
+		Group:       group,
 	}
 
 	page := p.Render()

@@ -110,10 +110,32 @@ ul.tree li {
 }
 .panel-header {
 	border-bottom: solid 1px #e4e4e4;
+	overflow: auto;
 }
 .panel-header h3 {
 	padding: 10px;
 	font-weight: 700;
+	float: left;
+}
+.panel-header .filter {
+	float: right;
+	display: inline-block;
+	font-size: 10px;
+	box-sizing: border-box;
+	padding: 10px;
+}
+.panel-header .filter:hover svg {
+	fill: #afafaf;
+}
+.panel-header .filter svg {
+	width: 15px;
+	fill: #e4e4e4;
+}
+.panel-header .filter-active svg {
+	fill: #afafaf;
+}
+.panel-header .filter-active:hover svg {
+	fill: #e4e4e4;
 }
 .panel .panel-body {
 	padding: 15px;
